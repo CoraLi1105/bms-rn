@@ -11,7 +11,7 @@ import {Button, Image} from '@rneui/base';
 import {Avatar} from '@rneui/themed';
 
 /**
- * 登录頁面
+ * 设置密码頁面
  */
 
 const LoginPassword: React.FC<{}> = () => {
@@ -26,6 +26,9 @@ const LoginPassword: React.FC<{}> = () => {
           placeholder="再次输入新的密码"></TextInput>
       </View>
       <Text style={styles.text}>6-16位密码、数字或字母</Text>
+      <TouchableOpacity style={styles.btncontent} activeOpacity={0.5}>
+        <Text style={styles.button}>确定</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -38,7 +41,7 @@ const styles = StyleSheet.create({
   textcontent: {
     display: 'flex',
     alignItems: 'center',
-    marginTop:'5%'
+    marginTop: '5%',
   },
   textinput: {
     backgroundColor: '#ffffff',
@@ -49,10 +52,25 @@ const styles = StyleSheet.create({
     marginTop: 8,
     width: '80%',
   },
-  text:{
-    fontSize:14,
-    marginLeft:'15%',
-    marginTop:10,
+  text: {
+    fontSize: 14,
+    marginLeft: '15%',
+    marginTop: 10,
+  },
+  btncontent: {
+    marginTop: 35,
+    display: 'flex',
+    alignItems: 'center',
+  },
+  button: {
+    width:'80%',
+    backgroundColor: '#604575',
+    height: 45,
+    fontSize: 18,
+    textAlignVertical: 'center',
+    textAlign: 'center',
+    color: '#ffffff',
+    borderRadius: 40,
   },
 });
 

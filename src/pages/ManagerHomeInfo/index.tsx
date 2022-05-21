@@ -1,120 +1,12 @@
 import {Button, Image, Text} from '@rneui/base';
 import {Avatar, ListItem, SearchBar} from '@rneui/themed';
-import React from 'react';
+import React, {useEffect} from 'react';
+import {useState} from 'react';
 import {FlatList, StyleSheet, TextInput, View} from 'react-native';
+import {AppScreenProps} from '../../../App';
+import {getBorrowInfoList} from './service';
+import {BorrowInfoList} from './types';
 
-const USER_ICON = require('../../image/我.png');
-
-const list = [
-  {
-    name: '从一到无穷大',
-    subtitle: '乔治·伽莫夫',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-  {
-    name: '置身事内',
-    subtitle: '兰小欢',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-  {
-    name: '置身事内',
-    subtitle: '兰小欢',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-  {
-    name: '置身事内',
-    subtitle: '兰小欢',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-  {
-    name: '置身事内',
-    subtitle: '兰小欢',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-  {
-    name: '置身事内',
-    subtitle: '兰小欢',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-  {
-    name: '置身事内',
-    subtitle: '兰小欢',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-  {
-    name: '置身事内',
-    subtitle: '兰小欢',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-  {
-    name: '置身事内',
-    subtitle: '兰小欢',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-  {
-    name: '置身事内',
-    subtitle: '兰小欢',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-  {
-    name: '置身事内',
-    subtitle: '兰小欢',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-  {
-    name: '置身事内',
-    subtitle: '兰小欢',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-  {
-    name: '置身事内',
-    subtitle: '兰小欢',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-  {
-    name: '置身事内',
-    subtitle: '兰小欢',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-  {
-    name: '置身事内',
-    subtitle: '兰小欢',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-  {
-    name: '置身事内',
-    subtitle: '兰小欢',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-  {
-    name: '置身事内',
-    subtitle: '兰小欢',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-  {
-    name: '置身事内',
-    subtitle: '兰小欢',
-    Text: '剩余量：66本',
-    String: '借阅状态：可以借阅',
-  },
-];
 
 /**
  * 图书页面
@@ -122,18 +14,46 @@ const list = [
 const ADD_ICON = require('../../image/加号.png');
 const ARROW_ICON = require('../../image/右箭头.png');
 
-const ManagerHomeInfo: React.FC<{}> = () => {
+const ManagerHomeInfo: React.FC<AppScreenProps> = ({navigation}) => {
+  const [tabActive, setTabAction] = useState<'borrow' | 'not-return'>('borrow');
+  const [borrowinfolist, setBorrowInfoList] = useState<BorrowInfoList[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const booksListData = await getBorrowInfoList({pageSize: 5});
+      setBorrowInfoList(booksListData);
+    };
+
+    fetchData();
+  }, []);
   const renderItem = ({item}) => (
     <ListItem bottomDivider style={styles.itemcontent}>
-      <ListItem.Content >
-        <ListItem.Title style={styles.author}>{item.name}</ListItem.Title>
-        <ListItem.Subtitle style={styles.author}>
-          {item.subtitle}
-        </ListItem.Subtitle>
-        <Text style={styles.author}>{item.Text}</Text>
-        <Text style={styles.author}>{item.String}</Text>
-        <Text style={styles.author}>{item.String}</Text>
-        <Text style={styles.author}>{item.String}</Text>
+      <ListItem.Content>
+        {tabActive === 'borrow' ? (
+          <>
+            <ListItem.Title style={styles.author}>
+              {item.username}
+            </ListItem.Title>
+            <ListItem.Subtitle style={styles.author}>
+              {item.tel}
+            </ListItem.Subtitle>
+            <Text style={styles.author}>{item.IDnumber}</Text>
+            <Text style={styles.author}>{item.bookname}</Text>
+            <Text style={styles.author}>{item.borrowtime}</Text>
+            <Text style={styles.author}>{item.returntime}</Text>
+          </>
+        ) : (
+          <>
+            <ListItem.Title style={styles.borrowername}>
+              {item.noreturnname}
+            </ListItem.Title>
+            <ListItem.Subtitle style={styles.author}>
+              {item.borrowbook}
+            </ListItem.Subtitle>
+            <Text style={styles.author}>{item.overduetime}</Text>
+            <Text style={styles.author}>{item.noreturntel}</Text>
+          </>
+        )}
       </ListItem.Content>
     </ListItem>
   );
@@ -153,13 +73,25 @@ const ManagerHomeInfo: React.FC<{}> = () => {
         />
       </View>
       <View style={styles.classify}>
-        <Text style={styles.borrowtext}>借阅信息</Text>
-        <Text style={styles.noreturntext}>未归还用户</Text>
+        <Text
+          style={
+            tabActive === 'borrow' ? styles.borrowtext : styles.noreturntext
+          }
+          onPress={() => setTabAction('borrow')}>
+          借阅信息
+        </Text>
+        <Text
+          style={
+            tabActive === 'not-return' ? styles.borrowtext : styles.noreturntext
+          }
+          onPress={() => setTabAction('not-return')}>
+          未归还用户
+        </Text>
       </View>
       <View style={styles.listcontent}>
         <FlatList
           keyExtractor={(item, index) => index.toString()}
-          data={list}
+          data={borrowinfolist}
           renderItem={renderItem}
           style={styles.flatcontent}
         />
@@ -174,17 +106,15 @@ const styles = StyleSheet.create({
   },
   flatcontent: {
     width: '95%',
-    
   },
-  itemcontent:{
-    marginTop:10,
+  itemcontent: {
+    marginTop: 10,
   },
   listcontent: {
     backgroundColor: 'rgb(239,235,242)',
     display: 'flex',
     alignItems: 'center',
     marginTop: 15,
-    
   },
   searchcontent: {
     backgroundColor: '#ffffff',
@@ -201,6 +131,7 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     marginBottom: 10,
     paddingLeft: 15,
+    marginTop: 20,
   },
   classify: {
     backgroundColor: '#ffffff',
@@ -228,6 +159,13 @@ const styles = StyleSheet.create({
   author: {
     fontSize: 14,
     marginBottom: 5,
+    color: '#604575',
+  },
+  borrowername: {
+    fontSize: 20,
+    fontWeight:'700',
+    marginBottom: 15,
+    color: '#604575',
   },
   remain: {
     fontSize: 12,

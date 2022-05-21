@@ -1,7 +1,10 @@
 import {Button, Image, Text} from '@rneui/base';
 import {Avatar, ListItem, SearchBar} from '@rneui/themed';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {FlatList, StyleSheet, TextInput, View} from 'react-native';
+import { AppScreenProps } from '../../../App';
+import { getBooksList } from './service';
+import { BooksList } from './types';
 
 const USER_ICON = require('../../image/我.png');
 
@@ -140,21 +143,32 @@ const list = [
 const ADD_ICON = require('../../image/加号.png');
 const ARROW_ICON = require('../../image/右箭头.png');
 
-const ManagerHome: React.FC<{}> = () => {
+const ManagerHome: React.FC<AppScreenProps> = ({navigation}) => {
+  const [bookslist, setBooksList] = useState<BooksList[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const booksListData = await getBooksList({pageSize: 5});
+      setBooksList(booksListData);
+    };
+
+    fetchData();
+  }, []);
+
   const renderItem = ({item}) => (
-    <ListItem bottomDivider>
+    <ListItem bottomDivider   onStartShouldSetResponder={() => navigation.navigate('图书详情')}>
       <Image
-        source={{uri: item.avatar_url}}
+        source={{uri: item.imgUrl}}
         style={{width: 80, height: 100}}
         progressiveRenderingEnabled
       />
       <ListItem.Content>
-        <ListItem.Title style={styles.bookname}>{item.name}</ListItem.Title>
+        <ListItem.Title style={styles.bookname}>{item.title}</ListItem.Title>
         <ListItem.Subtitle style={styles.author}>
-          {item.subtitle}
+          {item.author}
         </ListItem.Subtitle>
-        <Text style={styles.remain}>{item.Text}</Text>
-        <Text style={styles.remain}>{item.String}</Text>
+        <Text style={styles.remain}>{item.remainnumber}</Text>
+        <Text style={styles.remain}>{item.borrowstatus}</Text>
       </ListItem.Content>
       <Image source={ARROW_ICON} style={styles.arrow} />
     </ListItem>
@@ -162,22 +176,39 @@ const ManagerHome: React.FC<{}> = () => {
 
   return (
     <View style={styles.content}>
-      <View style={styles.searchcontent}>
-        {/* <SearchBar placeholder="Type Here..." style={styles.search}/> */}
-        <TextInput
-          autoCapitalize="none"
-          autoCorrect={false}
-          clearButtonMode="always"
-          placeholder="Type Here..."
-          style={styles.searchTextInput}
-          inlineImageLeft="glass1"
-          inlineImagePadding={15}
-        />
+      <View style={{backgroundColor: '#ffffff'}}>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            padding: 20,
+          }}>
+          <Text style={{fontSize: 20, fontWeight: '600',color:'#707070'}}>图书管理</Text>
+          <Image
+            source={require('../../image/加号.png')}
+            style={{width: 30, height: 30}}
+            onPress={()=>navigation.navigate('添加图书')}
+          />
+        </View>
+
+        <View style={styles.searchcontent}>
+          {/* <SearchBar placeholder="Type Here..." style={styles.search}/> */}
+          <TextInput
+            autoCapitalize="none"
+            autoCorrect={false}
+            clearButtonMode="always"
+            placeholder="Type Here..."
+            style={styles.searchTextInput}
+            inlineImageLeft="glass1"
+            inlineImagePadding={15}
+          />
+        </View>
       </View>
-     
+
       <FlatList
         keyExtractor={(item, index) => index.toString()}
-        data={list}
+        data={bookslist}
         renderItem={renderItem}
       />
     </View>
@@ -198,9 +229,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(239,235,242)',
     borderRadius: 40,
     marginBottom: 10,
-    paddingLeft:15,
+    paddingLeft: 15,
   },
- 
+
   bookname: {
     color: '#604575',
     fontSize: 17,
@@ -214,8 +245,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   arrow: {
-    width:20,
-    height:20,
+    width: 20,
+    height: 20,
   },
 });
 

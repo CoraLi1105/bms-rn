@@ -11,7 +11,7 @@ import {Button, Image} from '@rneui/base';
 import {Avatar} from '@rneui/themed';
 
 /**
- * 登录頁面
+ * 短信验证码登录頁面
  */
 
 const MessageLogin: React.FC<{}> = () => {

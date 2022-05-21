@@ -1,152 +1,107 @@
-import React from 'react';
-import {StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View} from 'react-native';
-import {Button, Image} from '@rneui/base';
-import {Avatar} from '@rneui/themed';
+import React, {useState} from 'react';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from 'react-native';
+import {Button, Image, SocialIcon} from '@rneui/base';
+import {Avatar, CheckBox} from '@rneui/themed';
+import {AppScreenProps} from '../../../App';
 
 /**
- * 登录頁面
+ * 第三方登录頁面
  */
-
-const avatarImgUrl = {
-  uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg',
-  // uri: 'https://uifaces.co/our-content/donated/6MWH9Xi_.jpg',
-};
-const Login: React.FC<{}> = () => {
+const socialIconList = [
+  {type: 'wechat', iconType: 'font-awesome', key: 'wechat'},
+  {type: 'weibo', iconType: 'font-awesome', key: 'weibo'},
+  {type: 'qq', iconType: 'font-awesome', key: 'qq'},
+];
+const Login: React.FC<AppScreenProps> = ({navigation}) => {
+  const [checked, setChecked] = useState<boolean>(false);
   return (
     <View style={styles.content}>
-      <Text style={styles.headtext}>请选择身份</Text>
-      <View style={styles.avatarcontent}>
-        <View style={styles.avatar}>
-          <Avatar
-            size={130}
-            rounded
-            containerStyle={{backgroundColor: '#6733b9'}}
-            source={avatarImgUrl}
-          />
-          <Text style={styles.headtitle}>管理者</Text>
-        </View>
-        <View style={styles.avatar}>
-          <Avatar
-            size={130}
-            rounded
-            containerStyle={{backgroundColor: '#6733b9'}}
-            source={avatarImgUrl}
-          />
-        <Text style={styles.headtitle}>借阅者</Text>
-        </View>
-      </View>
-      <View style={styles.logincontent}>
-        <TextInput
-          style={styles.textinput}
-          placeholder="请输入账号"></TextInput>
-        <TextInput
-          style={styles.textinput}
-          placeholder="请输入密码"></TextInput>
-        <TouchableOpacity  style={styles.btncontent} activeOpacity={0.5}>
-            <Text style={styles.button}>登录</Text>
+      <View style={styles.upcontent}>
+        <Text style={styles.headtext}>布书</Text>
+        {/* <Text style={styles.headtext}>189****1537</Text> */}
+        <TouchableOpacity
+          style={styles.btncontent}
+          activeOpacity={0.5}
+          onPress={() => {
+            navigation.push('Auth');
+          }}>
+          <Text style={styles.button}>一键登录/注册</Text>
         </TouchableOpacity>
       </View>
-      <Text style={styles.otheraccount}>使用第三方账号登录</Text>
-      <View style={styles.passwordcontent}>
-        <Text style={styles.forgetpassword}>忘记密码？</Text>
-        <Text style={styles.noaccount}>没有账户？点击注册</Text>
+      <View>
+        <View style={styles.downcontent}>
+          {socialIconList.map(item => (
+            <SocialIcon
+              type={item.type}
+              iconType={item.iconType}
+              key={item.key}
+            />
+          ))}
+        </View>
+        <View style={styles.checkbox}>
+          <CheckBox
+            title="Click Here"
+            checkedIcon="dot-circle-o"
+            uncheckedIcon="circle-o"
+            style={{backgroundColor: 'red'}}
+            containerStyle={{backgroundColor: 'rgba(255,255,255,0)'}}
+            checked={checked}
+            onPress={() => setChecked(!checked)}
+          />
+        </View>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  headtext: {
-    color: 'rgb(111,80,135)',
-    fontSize: 20,
-    textAlign: 'center',
-    marginTop: 20,
-    marginBottom: 20,
-  },
-  headtitle:{
-      color:'rgb(111,80,135)',
-      fontSize:16,
-      marginTop:20,
-  },
   content: {
-    backgroundColor: 'rgb(239,235,242)',
+    backgroundColor: '#604575',
     height: '100%',
+    display: 'flex',
+    justifyContent: 'space-between',
   },
-  avatarcontent: {
+  upcontent: {
+    display: 'flex',
+    alignItems: 'center',
+    alignContent: 'space-between',
+  },
+  downcontent: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 12,
-    marginBottom: 10,
+    padding: 50,
   },
-  avatar: {
-    width: 160,
-    height: 200,
-    borderRadius: 15,
-    backgroundColor: '#ffffff',
-    alignItems:'center',
-    paddingTop:10,
+  headtext: {
+    fontSize: 35,
+    color: 'rgb(239,235,242)',
+    marginTop: '45%',
+    marginBottom: '25%',
   },
-  logincontent: {
+  btncontent: {
+    width: '80%',
+    backgroundColor: 'rgb(239,235,242)',
+    borderRadius: 50,
+    height: 50,
     display: 'flex',
-    flexDirection: 'column',
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  textinput: {
-    height: 45,
-    width: '80%',
-    borderWidth: 1,
-    borderColor: '#C0A7D2',
-    backgroundColor: '#ffffff',
-    borderRadius: 40,
-    marginTop: 15,
-    paddingLeft: 20,
-  },
-  btncontent:{
-      width:'80%',
-      marginTop:15,
-  },
   button: {
-    backgroundColor:'#604575',
-    height:45,
-    fontSize:18,
-    textAlignVertical:'center',
-    textAlign:'center',
-    color:'#ffffff',
-    borderRadius:40,
-  },
-  title: {
     textAlign: 'center',
-    color: '#ffffff',
+    textAlignVertical: 'center',
+    height: 40,
     fontSize: 18,
   },
-  otheraccount: {
-    color: 'rgb(111,80,135)',
-    marginTop: 20,
-    marginLeft: 40,
-    fontSize: 16,
-  },
-  passwordcontent: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent:'space-between',
-    marginTop:20,
-    marginLeft:20,
-    padding:20
-  },
-  forgetpassword: {
-      fontSize:16,
-      color: 'rgb(111,80,135)',
-      textDecorationLine:'underline',
-      textDecorationStyle:'solid',
-      textDecorationColor:'rgb(111,80,135)',
-  },
-  noaccount: {
-    fontSize:16,
-    color: 'rgb(111,80,135)',
-    textDecorationLine:'underline',
-      textDecorationStyle:'solid',
-      textDecorationColor:'rgb(111,80,135)',
+  checkbox: {
+    backgroundColor: '#604575',
   },
 });
 

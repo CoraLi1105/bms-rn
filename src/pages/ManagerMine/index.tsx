@@ -1,69 +1,73 @@
 import {Avatar, Button, Icon, ListItem} from '@rneui/themed';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, View, Image, StyleSheet} from 'react-native';
+import {AppScreenProps} from '../../../App';
+import {getManagerMineData} from './service';
+import {ManagerMineData} from './types';
 
 const USER_ICON = require('../../image/我.png');
 const AVATAR_ICON = require('../../image/头像1.png');
 const RIGHT_ICON = require('../../image/右箭头.png');
-
-const OptionData = [
-  {key: 'user-info', icon: USER_ICON, title: '个人信息'},
-  {key: 'account-password', icon: USER_ICON, title: '账户密码'},
-];
-
-const list = [
-  {
-    title: 'Appointments',
-    icon: 'av-timer',
-  },
-  {
-    title: 'Trips',
-    icon: 'flight-takeoff',
-  },
-];
+const SET_ICON = require('../../image/205设置.png');
 
 const avatarImgUrl = {
   uri: 'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg',
-  // uri: 'https://uifaces.co/our-content/donated/6MWH9Xi_.jpg',
 };
 
 /**
  * 首頁
  */
-const ManagerMine: React.FC<{}> = () => {
+const ManagerMine: React.FC<AppScreenProps> = ({navigation}) => {
+  const [userinfo, setUserInfo] = useState<ManagerMineData>();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const userInfoData = await getManagerMineData();
+      setUserInfo(userInfoData);
+    };
+
+    fetchData();
+  }, []);
   return (
     <View>
-      <View style={styles.userInfo}>
-        <View style={styles.avatar}>
-          <Avatar
-            size={90}
-            rounded
-            containerStyle={{backgroundColor: '#6733b9'}}
-            source={avatarImgUrl}
-          />
-        </View>
-        <View style={styles.userContent}>
-          <Text style={styles.userTitle}>皮皮琪</Text>
-          <Text style={styles.userTitle}>22岁</Text>
-        </View>
-      </View>
-      <View style={styles.userOptionContent}>
-        <ListItem.Swipeable>
-          <Icon name="My Icon" />
-          <ListItem.Content>
-            <ListItem.Title>Hello Swiper</ListItem.Title>
-          </ListItem.Content>
-          <ListItem.Chevron />
-        </ListItem.Swipeable>
-        {/* {OptionData.map(item => (
-          <View key={item.key} style={styles.userOptionItem}>
-            <View style={styles.userContentItemLeft}>
-              <Image style={styles.pImg} source={item.icon}></Image>
-              <Text style={styles.userTitle}>{item.title}</Text>
-            </View>
-            <Image style={styles.aImg} source={RIGHT_ICON}></Image>
+      {userinfo ? (
+        <View style={styles.userInfo}>
+          <View style={styles.avatar}>
+            <Avatar
+              size={90}
+              rounded
+              containerStyle={{backgroundColor: '#6733b9'}}
+              source={{uri: userinfo.imgUrl}}
+            />
           </View>
-        ))} */}
+          <View style={styles.userContent}>
+            <Text style={styles.userTitle}>{userinfo.username}</Text>
+            <Text style={styles.userTitle}>{userinfo.userage}</Text>
+          </View>
+        </View>
+      ) : (
+        <Text>Loading...</Text>
+      )}
+
+      <View style={styles.userOptionContent}>
+        <View
+          style={styles.userOptionItem}
+          onStartShouldSetResponder={() => navigation.navigate('修改个人信息')}>
+          <View style={styles.userContentItemLeft}>
+            <Image style={styles.pImg} source={USER_ICON}></Image>
+            <Text style={styles.userTitle}>个人信息</Text>
+          </View>
+          <Image style={styles.aImg} source={RIGHT_ICON}></Image>
+        </View>
+        <View
+          style={styles.userOptionItem}
+          onStartShouldSetResponder={() => navigation.navigate('身份验证')}>
+          <View style={styles.userContentItemLeft}>
+            <Image style={styles.pImg} source={SET_ICON}></Image>
+            <Text style={styles.userTitle}>修改密码</Text>
+          </View>
+          <Image style={styles.aImg} source={RIGHT_ICON}></Image>
+        </View>
       </View>
     </View>
   );
